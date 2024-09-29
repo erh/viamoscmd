@@ -1,0 +1,14 @@
+{
+  "$schema": "https://dl.viam.dev/module.schema.json",
+  "module_id": "erh:viamoscmd",
+  "visibility": "private",
+  "url": "",
+  "description": "",
+  "models": [
+    {
+      "api": "",
+      "model": ""
+    }
+  ],
+  "entrypoint": ""
+}
