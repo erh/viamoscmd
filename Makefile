@@ -1,14 +1,11 @@
 
 module: module.tar.gz
 
-bin/viamseakeepermodule: go.mod *.go cmd/module/*.go
-	go build -o bin/viamseakeepermodule cmd/module/cmd.go
+bin/viamoscmdmodule: go.mod *.go cmd/module/*.go
+	go build -o bin/viamoscmdmodule cmd/module/cmd.go
 
 lint:
 	gofmt -s -w .
-
-sample: bin/viamseakeeper
-	./bin/viamseakeeper data/sample.json
 
 updaterdk:
 	go get go.viam.com/rdk@latest
@@ -18,9 +15,9 @@ test:
 	go test ./...
 
 
-module.tar.gz: bin/viamseakeepermodule
+module.tar.gz: bin/viamoscmdmodule
 	tar czf $@ $^
 
-all: test bin/viamseakeeper module 
+all: test bin/viamoscmd module 
 
 
