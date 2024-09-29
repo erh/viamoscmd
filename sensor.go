@@ -3,6 +3,7 @@ package viamoscmd
 import (
 	"context"
 	"fmt"
+	"os/exec"
 	"strings"
 
 	"go.viam.com/rdk/components/sensor"
@@ -18,44 +19,43 @@ func init() {
 	resource.RegisterComponent(
 		sensor.API,
 		Model,
-		resource.Registration[sensor.Sensor, resource.NoNativeConfig]{
+		resource.Registration[sensor.Sensor, *cmdSensorConfig]{
 			Constructor: newCmdSensor,
 		})
 }
 
+type cmdSensorConfig struct {
+	Cmd string
+	Args []string
+}
+
+func (cfg cmdSensorConfig) Validate(path string) ([]string, error) {
+	if cfg.Cmd == "" {
+		return nil, fmt.Errorf("need cmd")
+	}
+	if strings.Index(cfg.Cmd, " ") >= 0 {
+		return nil, fmt.Errorf("cmd cannot have spaces")
+	}
+	return nil, nil
+}
+
+func (cfg cmdSensorConfig) run() (map[string]interface{}, error) {
+	c := exec.Command(cfg.Cmd, cfg.Args...)
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{"out" : string(out)}, nil
+}
+
+
 func newCmdSensor(ctx context.Context, deps resource.Dependencies, config resource.Config, logger logging.Logger) (sensor.Sensor, error) {
-	s := &cmdSensor{name: config.ResourceName(), logger: logger}
-
-	cmd, ok := config.Attributes["cmd"]
-	if !ok {
-		return nil, fmt.Errorf("need to specify a cmd")
+	newConf, err := resource.NativeConfig[*cmdSensorConfig](config)
+	if err != nil {
+		return nil, err
 	}
 
-	cmdString, csok := cmd.(string)
-	cmdArray, caok := cmd.([]string)
-
-	if !csok && !caok {
-		return nil, fmt.Errorf("cmd needs to be a string or string array, not %T", cmd)
-	}
-
-	if csok {
-		cmdArray = strings.Split(cmdString, " ")
-	}
-
-	s.cmd = cmdArray[0]
-	s.args = cmdArray[1:]
-
-	argsRaw, cok := config.Attributes["args"]
-	if cok {
-		args, cok := argsRaw.([]string)
-		if !cok {
-			return nil, fmt.Errorf("args has to be a string arrray")
-		}
-		if len(s.args) > 0 && len(args) > 0 {
-			return nil, fmt.Errorf("cannot have args in cmd and args")
-		}
-		s.args = args
-	}
+	s := &cmdSensor{name: config.ResourceName(), config: newConf, logger: logger}
 
 	return s, nil
 }
@@ -65,17 +65,11 @@ type cmdSensor struct {
 
 	name   resource.Name
 	logger logging.Logger
-
-	cmd  string
-	args []string
-}
-
-func (cs *cmdSensor) run() (map[string]interface{}, error) {
-	panic(1)
+	config *cmdSensorConfig
 }
 
 func (cs *cmdSensor) Readings(ctx context.Context, extra map[string]interface{}) (map[string]interface{}, error) {
-	res, err := cs.run()
+	res, err := cs.config.run()
 	if err != nil {
 		return nil, err
 	}

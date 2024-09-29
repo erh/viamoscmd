@@ -1,27 +1,37 @@
 package viamoscmd
 
 import (
-	"context"
 	"testing"
 
-	"go.viam.com/rdk/logging"
-	"go.viam.com/rdk/resource"
-	"go.viam.com/rdk/utils"
 	"go.viam.com/test"
 )
 
 func TestCmdSensorErrors(t *testing.T) {
-	ctx := context.Background()
-	deps := resource.Dependencies{}
-	logger := logging.NewTestLogger(t)
-
-	_, err := newCmdSensor(ctx, deps, resource.Config{Attributes: utils.AttributeMap{}}, logger)
+	cfg := cmdSensorConfig{}
+	_, err := cfg.Validate("")
 	test.That(t, err, test.ShouldNotBeNil)
 
-	_, err = newCmdSensor(ctx, deps, resource.Config{Attributes: utils.AttributeMap{"cmd": 1}}, logger)
+	cfg.Cmd = "echo 1"
+	_, err = cfg.Validate("")
 	test.That(t, err, test.ShouldNotBeNil)
 
-	_, err = newCmdSensor(ctx, deps, resource.Config{Attributes: utils.AttributeMap{"cmd": []interface{}{"echo", 1}}}, logger)
+	cfg.Cmd = "echo"
+	_, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 
+	cfg.Cmd = "echo"
+	_, err = cfg.Validate("")
+	test.That(t, err, test.ShouldBeNil)
+	res, err := cfg.run()
+	test.That(t, err, test.ShouldBeNil)
+	test.That(t, map[string]interface{}{"out" : "\n"}, test.ShouldResemble, res)
+
+	
+	cfg.Cmd = "echo"
+	cfg.Args = []string{"1"}
+	_, err = cfg.Validate("")
+	test.That(t, err, test.ShouldBeNil)
+	res, err = cfg.run()
+	test.That(t, err, test.ShouldBeNil)
+	test.That(t, map[string]interface{}{"out" : "1\n"}, test.ShouldResemble, res)
 }
