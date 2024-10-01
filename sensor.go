@@ -25,8 +25,9 @@ func init() {
 }
 
 type cmdSensorConfig struct {
-	Cmd string
+	Cmd  string
 	Args []string
+	Env  map[string]interface{}
 }
 
 func (cfg cmdSensorConfig) Validate(path string) ([]string, error) {
@@ -41,13 +42,15 @@ func (cfg cmdSensorConfig) Validate(path string) ([]string, error) {
 
 func (cfg cmdSensorConfig) run() (map[string]interface{}, error) {
 	c := exec.Command(cfg.Cmd, cfg.Args...)
+	for k, v := range cfg.Env {
+		c.Env = append(c.Env, fmt.Sprintf("%s=%v", k, v))
+	}
 	out, err := c.CombinedOutput()
 	if err != nil {
 		return nil, err
 	}
-	return map[string]interface{}{"out" : string(out)}, nil
+	return map[string]interface{}{"out": string(out)}, nil
 }
-
 
 func newCmdSensor(ctx context.Context, deps resource.Dependencies, config resource.Config, logger logging.Logger) (sensor.Sensor, error) {
 	newConf, err := resource.NativeConfig[*cmdSensorConfig](config)

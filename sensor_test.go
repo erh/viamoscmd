@@ -24,14 +24,23 @@ func TestCmdSensorErrors(t *testing.T) {
 	test.That(t, err, test.ShouldBeNil)
 	res, err := cfg.run()
 	test.That(t, err, test.ShouldBeNil)
-	test.That(t, map[string]interface{}{"out" : "\n"}, test.ShouldResemble, res)
+	test.That(t, map[string]interface{}{"out": "\n"}, test.ShouldResemble, res)
 
-	
 	cfg.Cmd = "echo"
 	cfg.Args = []string{"1"}
 	_, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 	res, err = cfg.run()
 	test.That(t, err, test.ShouldBeNil)
-	test.That(t, map[string]interface{}{"out" : "1\n"}, test.ShouldResemble, res)
+	test.That(t, res, test.ShouldResemble, map[string]interface{}{"out": "1\n"})
+
+	cfg.Cmd = "env"
+	cfg.Args = []string{}
+	cfg.Env = map[string]interface{}{"foo": 17}
+	_, err = cfg.Validate("")
+	test.That(t, err, test.ShouldBeNil)
+	res, err = cfg.run()
+	test.That(t, err, test.ShouldBeNil)
+	test.That(t, res, test.ShouldResemble, map[string]interface{}{"out": "foo=17\n"})
+
 }
