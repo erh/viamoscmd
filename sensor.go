@@ -47,6 +47,12 @@ func (cfg cmdSensorConfig) run() (map[string]interface{}, error) {
 	}
 	out, err := c.CombinedOutput()
 	if err != nil {
+		if out != nil {
+			outs := strings.TrimSpace(string(out))
+			if len(outs) > 0 {
+				return nil, fmt.Errorf("%s - %w", outs, err)
+			}
+		}
 		return nil, err
 	}
 	return map[string]interface{}{"out": string(out)}, nil
