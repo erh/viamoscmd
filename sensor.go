@@ -30,14 +30,14 @@ type cmdSensorConfig struct {
 	Env  map[string]interface{}
 }
 
-func (cfg cmdSensorConfig) Validate(path string) ([]string, error) {
+func (cfg cmdSensorConfig) Validate(path string) ([]string, []string, error) {
 	if cfg.Cmd == "" {
-		return nil, fmt.Errorf("need cmd")
+		return nil, nil, fmt.Errorf("need cmd")
 	}
 	if strings.Index(cfg.Cmd, " ") >= 0 {
-		return nil, fmt.Errorf("cmd cannot have spaces")
+		return nil, nil, fmt.Errorf("cmd cannot have spaces")
 	}
-	return nil, nil
+	return nil, nil, nil
 }
 
 func (cfg cmdSensorConfig) run() (map[string]interface{}, error) {
@@ -87,7 +87,7 @@ func (cs *cmdSensor) Readings(ctx context.Context, extra map[string]interface{})
 }
 
 func (cs *cmdSensor) DoCommand(ctx context.Context, cmd map[string]interface{}) (map[string]interface{}, error) {
-	return nil, nil
+	return cs.Readings(ctx, cmd)
 }
 
 func (cs *cmdSensor) Close(ctx context.Context) error {
