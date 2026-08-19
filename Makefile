@@ -1,8 +1,8 @@
 
 module: module.tar.gz
 
-bin/viamoscmdmodule: go.mod *.go cmd/module/*.go
-	go build -o bin/viamoscmdmodule cmd/module/cmd.go
+bin/viam-system-module: go.mod *.go cmd/module/*.go
+	go build -o bin/viam-system-module cmd/module/cmd.go
 
 lint:
 	gofmt -s -w .
@@ -15,9 +15,8 @@ test:
 	go test ./...
 
 
-module.tar.gz: bin/viamoscmdmodule
+module.tar.gz: bin/viam-system-module
 	tar czf $@ $^
 
-all: test bin/viamoscmd module 
-
+all: test bin/viam-system-module module
 

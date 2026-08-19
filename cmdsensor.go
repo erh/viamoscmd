@@ -1,4 +1,4 @@
-package viamoscmd
+package viamsystem
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"go.viam.com/rdk/resource"
 )
 
-var family = resource.ModelNamespace("erh").WithFamily("viamoscmd")
+var family = resource.ModelNamespace("erh").WithFamily("viam-system")
 
 var Model = family.WithModel("cmdsensor")
 
@@ -88,6 +88,10 @@ func (cs *cmdSensor) Readings(ctx context.Context, extra map[string]interface{})
 
 func (cs *cmdSensor) DoCommand(ctx context.Context, cmd map[string]interface{}) (map[string]interface{}, error) {
 	return cs.Readings(ctx, cmd)
+}
+
+func (cs *cmdSensor) Status(ctx context.Context) (map[string]interface{}, error) {
+	return map[string]interface{}{}, nil
 }
 
 func (cs *cmdSensor) Close(ctx context.Context) error {

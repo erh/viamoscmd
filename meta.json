@@ -1,17 +1,17 @@
 {
   "$schema": "https://dl.viam.dev/module.schema.json",
-  "module_id": "erh:viamoscmd",
+  "module_id": "erh:viam-system",
   "visibility": "public",
-  "url": "https://github.com/erh/viamoscmd/",
+  "url": "https://github.com/erh/viam-system/",
   "description": "for running os cmmands as sensors and what not",
   "models": [
     {
       "api": "rdk:component:sensor",
-      "model": "erh:viamoscmd:cmdsensor",
+      "model": "erh:viam-system:cmdsensor",
       "markdown_link": "README.md#cmdsensor"
     }
   ],
-  "entrypoint": "./bin/viamoscmdmodule",
+  "entrypoint": "./bin/viam-system-module",
   "build": {
     "build": "make module",
     "setup": "",

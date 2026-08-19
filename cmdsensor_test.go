@@ -1,4 +1,4 @@
-package viamoscmd
+package viamsystem
 
 import (
 	"testing"
@@ -8,19 +8,19 @@ import (
 
 func TestCmdSensor1(t *testing.T) {
 	cfg := cmdSensorConfig{}
-	_, err := cfg.Validate("")
+	_, _, err := cfg.Validate("")
 	test.That(t, err, test.ShouldNotBeNil)
 
 	cfg.Cmd = "echo 1"
-	_, err = cfg.Validate("")
+	_, _, err = cfg.Validate("")
 	test.That(t, err, test.ShouldNotBeNil)
 
 	cfg.Cmd = "echo"
-	_, err = cfg.Validate("")
+	_, _, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 
 	cfg.Cmd = "echo"
-	_, err = cfg.Validate("")
+	_, _, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 	res, err := cfg.run()
 	test.That(t, err, test.ShouldBeNil)
@@ -28,7 +28,7 @@ func TestCmdSensor1(t *testing.T) {
 
 	cfg.Cmd = "echo"
 	cfg.Args = []string{"1"}
-	_, err = cfg.Validate("")
+	_, _, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 	res, err = cfg.run()
 	test.That(t, err, test.ShouldBeNil)
@@ -37,7 +37,7 @@ func TestCmdSensor1(t *testing.T) {
 	cfg.Cmd = "env"
 	cfg.Args = []string{}
 	cfg.Env = map[string]interface{}{"foo": 17}
-	_, err = cfg.Validate("")
+	_, _, err = cfg.Validate("")
 	test.That(t, err, test.ShouldBeNil)
 	res, err = cfg.run()
 	test.That(t, err, test.ShouldBeNil)

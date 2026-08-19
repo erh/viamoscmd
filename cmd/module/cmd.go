@@ -5,11 +5,11 @@ import (
 	"go.viam.com/rdk/module"
 	"go.viam.com/rdk/resource"
 
-	"github.com/erh/viamoscmd"
+	viamsystem "github.com/erh/viam-system"
 )
 
 func main() {
 	module.ModularMain(
-		resource.APIModel{sensor.API, viamoscmd.Model},
+		resource.APIModel{API: sensor.API, Model: viamsystem.Model},
 	)
 }
