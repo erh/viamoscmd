@@ -9,6 +9,11 @@
       "api": "rdk:component:sensor",
       "model": "erh:viam-system:cmdsensor",
       "markdown_link": "README.md#cmdsensor"
+    },
+    {
+      "api": "rdk:component:sensor",
+      "model": "erh:viam-system:apt",
+      "markdown_link": "README.md#apt"
     }
   ],
   "entrypoint": "./bin/viam-system-module",

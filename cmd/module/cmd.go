@@ -11,5 +11,6 @@ import (
 func main() {
 	module.ModularMain(
 		resource.APIModel{API: sensor.API, Model: viamsystem.Model},
+		resource.APIModel{API: sensor.API, Model: viamsystem.AptModel},
 	)
 }
